@@ -23,7 +23,7 @@ const rule = {
 class CreteTables {
     constructor(con){ this.con = con }
     query(type, name) {
-        this.con.query( {tables, rule, news }[type][name],
+        this.con.query( {tables, rule }[type][name],
             function (error, result) {
                 error
                     ? console.log(`ERROR: ${error.sqlMessage}`)

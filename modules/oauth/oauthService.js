@@ -1,4 +1,4 @@
-const { token, query, addCookies, log } = require("../service");
+const { token, query, addCookies, errorLog, date } = require("../service");
 
 class OauthService {
     async createUser(profile) {
@@ -10,7 +10,7 @@ class OauthService {
             lastName: profile.name && profile.name.familyName ? profile.name.familyName : "",
             email: profile.emails && profile.emails.length > 0 && profile.emails[0].value !== undefined ? profile.emails[0].value : "",
             photo: profile.photos && profile.photos.length > 0 && profile.photos[0].value !== undefined ? profile.photos[0].value : "",
-            date: `${date.toISOString().slice(0, 10)} ${date.getHours()}:${date.getMinutes()}`,
+            date: date.show('yyyy-mm-dd hh:mi')
         };
     }
 
@@ -23,7 +23,7 @@ class OauthService {
                 res.redirect("/person");
             })
             .catch((error) => {
-                log("ERROR update token:", error);
+                errorLog(error, 'error', 'aouth', {ip : '', url : `ERROR update token: ${user_id}`});
                 addCookies(req, res, "", "-1");
                 res.redirect("/home");
             });
@@ -55,7 +55,7 @@ class OauthService {
         await query(sql)
             .then(() => done(null, profile))
             .catch((error) => {
-                log("ERROR updating user:", error);
+                errorLog(error, 'error', 'aouth', {ip : '', url : `ERROR updating user: ${user.id}`});
                 done(null, profile);
             });
     }
